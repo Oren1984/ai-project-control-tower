@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Project Audit Report — {{ project_name }}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; }
+    h1 { color: #1a1a2e; border-bottom: 3px solid #1a1a2e; padding-bottom: 12px; }
+    h2 { color: #16213e; border-bottom: 1px solid #ddd; padding-bottom: 6px; margin-top: 40px; }
+    h3 { color: #0f3460; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9em; }
+    th { background: #1a1a2e; color: #fff; padding: 10px 12px; text-align: left; }
+    td { padding: 8px 12px; border-bottom: 1px solid #ddd; }
+    tr:nth-child(even) { background: #f8f9fa; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+    .critical { background: #dc3545; color: #fff; }
+    .high { background: #fd7e14; color: #fff; }
+    .medium { background: #ffc107; color: #000; }
+    .low { background: #28a745; color: #fff; }
+    .info { background: #6c757d; color: #fff; }
+    .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+    .score-card { background: #f8f9fa; border-left: 4px solid #1a1a2e; padding: 16px; border-radius: 4px; }
+    .score-card .label { font-size: 0.85em; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+    .score-card .value { font-size: 2em; font-weight: bold; color: #1a1a2e; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+    pre { background: #f4f4f4; padding: 16px; border-radius: 4px; overflow-x: auto; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 32px 0; }
+    .finding-block { background: #f8f9fa; border-left: 4px solid #dee2e6; padding: 16px; margin: 16px 0; border-radius: 0 4px 4px 0; }
+    .no-findings { color: #6c757d; font-style: italic; }
+    footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #ddd; color: #6c757d; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+
+<h1>AI Project Audit Report</h1>
+
+<h2>1. Executive Summary</h2>
+<p><strong>Project reviewed:</strong> {{ project_name }}</p>
+<p><strong>Audit mode:</strong> {{ result.mode }}</p>
+<p><strong>Audit date:</strong> {{ audit_date }}</p>
+<p><strong>Overall score:</strong> {{ result.scores.overall }}/100</p>
+<p>Audit completed with <strong>{{ result.total_findings }}</strong> total findings:
+  <span class="badge critical">Critical: {{ critical_findings | length }}</span>
+  <span class="badge high">High: {{ high_findings | length }}</span>
+  <span class="badge medium">Medium: {{ medium_findings | length }}</span>
+  <span class="badge low">Low: {{ low_findings | length }}</span>
+</p>
+<hr>
+
+<h2>2. Project Overview</h2>
+<table>
+  <tr><th>Field</th><th>Value</th></tr>
+  <tr><td>Project</td><td>{{ project_name }}</td></tr>
+  <tr><td>Blueprint</td><td>{{ blueprint_name }}</td></tr>
+  <tr><td>Audit Mode</td><td>{{ result.mode }}</td></tr>
+  <tr><td>Status</td><td>{{ result.status }}</td></tr>
+  <tr><td>Started</td><td>{{ result.started_at.isoformat() if result.started_at else "N/A" }}</td></tr>
+  <tr><td>Completed</td><td>{{ result.completed_at.isoformat() if result.completed_at else "N/A" }}</td></tr>
+</table>
+<hr>
+
+<h2>3. Blueprint Alignment</h2>
+<table>
+  <tr><th>Area</th><th>Expected</th><th>Found</th><th>Status</th></tr>
+  <tr><td>Architecture</td><td>Per Blueprint</td><td>See Section 5</td><td>Reviewed</td></tr>
+  <tr><td>RAG</td><td>Per Blueprint</td><td>See Section 6</td><td>Reviewed</td></tr>
+  <tr><td>Agents</td><td>Per Blueprint</td><td>See Section 6</td><td>Reviewed</td></tr>
+  <tr><td>DevOps</td><td>Per Blueprint</td><td>See Section 7</td><td>Reviewed</td></tr>
+  <tr><td>QA</td><td>Per Blueprint</td><td>See Section 8</td><td>Reviewed</td></tr>
+  <tr><td>Security</td><td>Per Blueprint</td><td>See Section 9</td><td>Reviewed</td></tr>
+  <tr><td>Docs</td><td>Per Blueprint</td><td>See Section 11</td><td>Reviewed</td></tr>
+</table>
+<hr>
+
+<h2>4. Repository Structure Review</h2>
+{% set arch_agent = findings_by_agent.get("ArchitectureAgent", []) %}
+{% if arch_agent %}
+<ul>
+{% for f in arch_agent %}
+  <li><span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span> {{ f.title }}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p class="no-findings">No structure findings recorded.</p>
+{% endif %}
+<hr>
+
+<h2>5. Architecture Review</h2>
+<p><strong>Architecture score: {{ result.scores.architecture }}/100</strong></p>
+{% set arch_agent = findings_by_agent.get("ArchitectureAgent", []) %}
+{% if arch_agent %}
+{% for f in arch_agent %}
+<div class="finding-block">
+  <h3>{{ f.title }} <span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span></h3>
+  <p>{{ f.description }}</p>
+  {% if f.evidence %}<p><strong>Evidence:</strong> <code>{{ f.evidence }}</code></p>{% endif %}
+  <p><strong>Recommendation:</strong> {{ f.recommendation }}</p>
+  {% if f.file_path %}<p><strong>File:</strong> <code>{{ f.file_path }}{% if f.line_number %} line {{ f.line_number }}{% endif %}</code></p>{% endif %}
+</div>
+{% endfor %}
+{% else %}
+<p class="no-findings">No architecture findings.</p>
+{% endif %}
+<hr>
+
+<h2>6. RAG / Agent Review</h2>
+<p><strong>RAG/Agent score: {{ result.scores.rag_agent }}/100</strong></p>
+{% set rag_agent = findings_by_agent.get("RAGAIAgent", []) %}
+{% if rag_agent %}
+{% for f in rag_agent %}
+<div class="finding-block">
+  <h3>{{ f.title }} <span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span></h3>
+  <p>{{ f.description }}</p>
+  {% if f.evidence %}<p><strong>Evidence:</strong> <code>{{ f.evidence }}</code></p>{% endif %}
+  <p><strong>Recommendation:</strong> {{ f.recommendation }}</p>
+</div>
+{% endfor %}
+{% else %}
+<p class="no-findings">No RAG/Agent findings.</p>
+{% endif %}
+<hr>
+
+<h2>7. DevOps / MLOps Review</h2>
+<p><strong>DevOps: {{ result.scores.devops }}/100 | MLOps: {{ result.scores.mlops }}/100</strong></p>
+{% set devops_agent = findings_by_agent.get("DevOpsMLOpsAgent", []) %}
+{% if devops_agent %}
+{% for f in devops_agent %}
+<div class="finding-block">
+  <h3>{{ f.title }} <span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span></h3>
+  <p>{{ f.description }}</p>
+  {% if f.evidence %}<p><strong>Evidence:</strong> <code>{{ f.evidence }}</code></p>{% endif %}
+  <p><strong>Recommendation:</strong> {{ f.recommendation }}</p>
+</div>
+{% endfor %}
+{% else %}
+<p class="no-findings">No DevOps/MLOps findings.</p>
+{% endif %}
+<hr>
+
+<h2>8. QA &amp; Testing Review</h2>
+<p><strong>QA score: {{ result.scores.qa }}/100</strong></p>
+{% set qa_agent = findings_by_agent.get("QAAgent", []) %}
+{% if qa_agent %}
+{% for f in qa_agent %}
+<div class="finding-block">
+  <h3>{{ f.title }} <span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span></h3>
+  <p>{{ f.description }}</p>
+  {% if f.evidence %}<p><strong>Evidence:</strong> <code>{{ f.evidence }}</code></p>{% endif %}
+  <p><strong>Recommendation:</strong> {{ f.recommendation }}</p>
+</div>
+{% endfor %}
+{% else %}
+<p class="no-findings">No QA findings.</p>
+{% endif %}
+<hr>
+
+<h2>9. Security Review</h2>
+<p><strong>Security score: {{ result.scores.security }}/100</strong></p>
+{% set sec_agent = findings_by_agent.get("SecurityAgent", []) %}
+{% if sec_agent %}
+{% for f in sec_agent %}
+<div class="finding-block">
+  <h3>{{ f.title }} <span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span></h3>
+  <p>{{ f.description }}</p>
+  {% if f.evidence %}<p><strong>Evidence:</strong> <code>{{ f.evidence }}</code></p>{% endif %}
+  <p><strong>Recommendation:</strong> {{ f.recommendation }}</p>
+</div>
+{% endfor %}
+{% else %}
+<p class="no-findings">No security findings.</p>
+{% endif %}
+<hr>
+
+<h2>10. Observability Review</h2>
+<p><strong>Observability score: {{ result.scores.observability }}/100</strong></p>
+{% set obs_findings = [] %}
+{% for f in result.findings %}{% if "observ" in f.category | lower %}{% set _ = obs_findings.append(f) %}{% endif %}{% endfor %}
+{% if obs_findings %}
+<ul>{% for f in obs_findings %}<li><span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span> {{ f.title }}: {{ f.description }}</li>{% endfor %}</ul>
+{% else %}
+<p class="no-findings">No observability findings recorded.</p>
+{% endif %}
+<hr>
+
+<h2>11. Documentation Review</h2>
+<p><strong>Documentation score: {{ result.scores.documentation }}/100</strong></p>
+{% set doc_agent = findings_by_agent.get("DocumentationAgent", []) %}
+{% if doc_agent %}
+{% for f in doc_agent %}
+<div class="finding-block">
+  <h3>{{ f.title }} <span class="badge {{ f.severity.value }}">{{ f.severity.value | upper }}</span></h3>
+  <p>{{ f.description }}</p>
+  <p><strong>Recommendation:</strong> {{ f.recommendation }}</p>
+</div>
+{% endfor %}
+{% else %}
+<p class="no-findings">No documentation findings.</p>
+{% endif %}
+<hr>
+
+<h2>12. Critical Findings</h2>
+{% if critical_findings %}
+<table>
+  <tr><th>ID</th><th>Category</th><th>Finding</th><th>Evidence</th><th>Recommendation</th></tr>
+  {% for f in critical_findings %}
+  <tr><td>F-C{{ loop.index }}</td><td>{{ f.category }}</td><td>{{ f.title }}</td><td>{{ f.evidence or "—" }}</td><td>{{ f.recommendation }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="no-findings">No critical findings.</p>
+{% endif %}
+<hr>
+
+<h2>13. High / Medium Findings</h2>
+{% if high_findings or medium_findings %}
+<table>
+  <tr><th>ID</th><th>Severity</th><th>Category</th><th>Finding</th><th>Evidence</th><th>Recommendation</th></tr>
+  {% for f in high_findings %}
+  <tr><td>F-H{{ loop.index }}</td><td><span class="badge high">HIGH</span></td><td>{{ f.category }}</td><td>{{ f.title }}</td><td>{{ f.evidence or "—" }}</td><td>{{ f.recommendation }}</td></tr>
+  {% endfor %}
+  {% for f in medium_findings %}
+  <tr><td>F-M{{ loop.index }}</td><td><span class="badge medium">MEDIUM</span></td><td>{{ f.category }}</td><td>{{ f.title }}</td><td>{{ f.evidence or "—" }}</td><td>{{ f.recommendation }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="no-findings">No high/medium findings.</p>
+{% endif %}
+<hr>
+
+<h2>14. Low Priority Findings</h2>
+{% if low_findings %}
+<table>
+  <tr><th>ID</th><th>Category</th><th>Finding</th><th>Recommendation</th></tr>
+  {% for f in low_findings %}
+  <tr><td>F-L{{ loop.index }}</td><td>{{ f.category }}</td><td>{{ f.title }}</td><td>{{ f.recommendation }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="no-findings">No low-priority findings.</p>
+{% endif %}
+<hr>
+
+<h2>15. Recommendations</h2>
+<p>High-level manual recommendations only. No automatic patches or fix instructions are included.</p>
+{% if result.findings %}
+<ul>
+{% set seen_cats = [] %}
+{% for f in result.findings %}{% if f.category not in seen_cats %}
+  <li><strong>{{ f.category | title }}:</strong> {{ f.recommendation }}</li>
+{% if seen_cats.append(f.category) %}{% endif %}
+{% endif %}{% endfor %}
+</ul>
+{% else %}
+<p class="no-findings">No recommendations — no findings recorded.</p>
+{% endif %}
+<hr>
+
+<h2>16. Suggested Manual Next Steps</h2>
+<ol>
+  <li>Review the Critical Findings section and prioritize accordingly.</li>
+  <li>Assess each High/Medium finding and decide what to address first.</li>
+  <li>Consult the relevant team members for context on flagged areas.</li>
+  <li>Use a coding assistant or manual review to address findings.</li>
+  <li>Re-run the audit after changes and compare score deltas.</li>
+  <li>Track progress using the Audit History view.</li>
+</ol>
+<hr>
+
+<h2>17. Final Score</h2>
+<div class="score-grid">
+  <div class="score-card"><div class="label">Overall</div><div class="value">{{ result.scores.overall }}</div></div>
+  <div class="score-card"><div class="label">Architecture</div><div class="value">{{ result.scores.architecture }}</div></div>
+  <div class="score-card"><div class="label">QA</div><div class="value">{{ result.scores.qa }}</div></div>
+  <div class="score-card"><div class="label">Security</div><div class="value">{{ result.scores.security }}</div></div>
+  <div class="score-card"><div class="label">DevOps</div><div class="value">{{ result.scores.devops }}</div></div>
+  <div class="score-card"><div class="label">MLOps</div><div class="value">{{ result.scores.mlops }}</div></div>
+  <div class="score-card"><div class="label">Documentation</div><div class="value">{{ result.scores.documentation }}</div></div>
+  <div class="score-card"><div class="label">RAG/Agent</div><div class="value">{{ result.scores.rag_agent }}</div></div>
+  <div class="score-card"><div class="label">Observability</div><div class="value">{{ result.scores.observability }}</div></div>
+</div>
+<hr>
+
+<h2>18. Known Limitations of This Audit</h2>
+<ul>
+  <li>This audit is read-only. No code was executed from the target repository.</li>
+  <li>Findings are based on static analysis and agent-based review, not runtime behavior.</li>
+  <li>Scores are heuristic and penalty-based — interpret as guidance, not absolute truth.</li>
+  <li>Blueprint alignment is approximate when no blueprint document was provided.</li>
+  <li>Security findings are indicative and must be confirmed by a human security review.</li>
+  <li>Observability and MLOps scoring may be incomplete without runtime environment access.</li>
+  <li>Re-running the audit after changes is recommended to verify improvements.</li>
+</ul>
+
+<footer>
+  Generated by AI Project Control Tower | {{ audit_date }}
+</footer>
+
+</body>
+</html>

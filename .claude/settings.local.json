@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\" -Force | Where-Object { -not $_.Name.StartsWith\\('.'\\) -or $_.Name -eq '.gitignore' } | Select-Object Name, @{Name='Type'; Expression={if\\($_.PSIsContainer\\){'Folder'}else{'File'}}})",
+      "Bash(python *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\" -Recurse -Force | ForEach-Object { if \\($_.PSIsContainer\\) { $_.FullName + \" [DIR]\" } else { $_.FullName } } | Sort-Object)",
+      "Bash(pip install *)",
+      "Bash(cat)",
+      "Read(//tmp/**)",
+      "Bash(dir docs *)",
+      "Bash(dir notebooks *)",
+      "Bash(dir static-demo *)",
+      "Bash(Get-ChildItem -Path 'C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\\\\ui' -Recurse -Force)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)"
+    ]
+  }
+}

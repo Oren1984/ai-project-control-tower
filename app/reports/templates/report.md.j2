@@ -1,0 +1,339 @@
+# AI Project Audit Report
+
+## 1. Executive Summary
+
+**Project reviewed:** {{ project_name }}
+**Audit mode:** {{ result.mode }}
+**Audit date:** {{ audit_date }}
+**Overall score:** {{ result.scores.overall }}/100
+
+Audit completed with **{{ result.total_findings }}** total findings.
+Critical: {{ critical_findings | length }} | High: {{ high_findings | length }} | Medium: {{ medium_findings | length }} | Low: {{ low_findings | length }}
+
+---
+
+## 2. Project Overview
+
+- **Project:** {{ project_name }}
+- **Blueprint:** {{ blueprint_name }}
+- **Audit Mode:** {{ result.mode }}
+- **Status:** {{ result.status }}
+- **Started:** {{ result.started_at.isoformat() if result.started_at else "N/A" }}
+- **Completed:** {{ result.completed_at.isoformat() if result.completed_at else "N/A" }}
+
+---
+
+## 3. Blueprint Alignment
+
+| Area | Expected | Found | Status |
+|---|---|---|---|
+| Architecture | Per Blueprint | See Section 5 | Reviewed |
+| RAG | Per Blueprint | See Section 6 | Reviewed |
+| Agents | Per Blueprint | See Section 6 | Reviewed |
+| DevOps | Per Blueprint | See Section 7 | Reviewed |
+| QA | Per Blueprint | See Section 8 | Reviewed |
+| Security | Per Blueprint | See Section 9 | Reviewed |
+| Docs | Per Blueprint | See Section 11 | Reviewed |
+
+---
+
+## 4. Repository Structure Review
+
+{% set arch_agent = findings_by_agent.get("ArchitectureAgent", []) %}
+{% if arch_agent %}
+{% for f in arch_agent %}
+- **[{{ f.severity.value | upper }}]** {{ f.title }}
+{% endfor %}
+{% else %}
+No structure findings recorded.
+{% endif %}
+
+---
+
+## 5. Architecture Review
+
+Architecture score: **{{ result.scores.architecture }}/100**
+
+{% set arch_agent = findings_by_agent.get("ArchitectureAgent", []) %}
+{% if arch_agent %}
+{% for f in arch_agent %}
+### {{ f.title }}
+
+**Severity:** {{ f.severity.value | upper }}
+**Category:** {{ f.category }}
+
+{{ f.description }}
+
+{% if f.evidence %}
+**Evidence:** {{ f.evidence }}
+{% endif %}
+
+**Recommendation:** {{ f.recommendation }}
+
+{% if f.file_path %}**File:** `{{ f.file_path }}`{% if f.line_number %} line {{ f.line_number }}{% endif %}{% endif %}
+
+---
+{% endfor %}
+{% else %}
+No architecture findings.
+{% endif %}
+
+---
+
+## 6. RAG / Agent Review
+
+RAG/Agent score: **{{ result.scores.rag_agent }}/100**
+
+{% set rag_agent = findings_by_agent.get("RAGAIAgent", []) %}
+{% if rag_agent %}
+{% for f in rag_agent %}
+### {{ f.title }}
+
+**Severity:** {{ f.severity.value | upper }}
+**Category:** {{ f.category }}
+
+{{ f.description }}
+
+{% if f.evidence %}
+**Evidence:** {{ f.evidence }}
+{% endif %}
+
+**Recommendation:** {{ f.recommendation }}
+
+---
+{% endfor %}
+{% else %}
+No RAG/Agent findings.
+{% endif %}
+
+---
+
+## 7. DevOps / MLOps Review
+
+DevOps score: **{{ result.scores.devops }}/100**
+MLOps score: **{{ result.scores.mlops }}/100**
+
+{% set devops_agent = findings_by_agent.get("DevOpsMLOpsAgent", []) %}
+{% if devops_agent %}
+{% for f in devops_agent %}
+### {{ f.title }}
+
+**Severity:** {{ f.severity.value | upper }}
+**Category:** {{ f.category }}
+
+{{ f.description }}
+
+{% if f.evidence %}
+**Evidence:** {{ f.evidence }}
+{% endif %}
+
+**Recommendation:** {{ f.recommendation }}
+
+---
+{% endfor %}
+{% else %}
+No DevOps/MLOps findings.
+{% endif %}
+
+---
+
+## 8. QA & Testing Review
+
+QA score: **{{ result.scores.qa }}/100**
+
+{% set qa_agent = findings_by_agent.get("QAAgent", []) %}
+{% if qa_agent %}
+{% for f in qa_agent %}
+### {{ f.title }}
+
+**Severity:** {{ f.severity.value | upper }}
+**Category:** {{ f.category }}
+
+{{ f.description }}
+
+{% if f.evidence %}
+**Evidence:** {{ f.evidence }}
+{% endif %}
+
+**Recommendation:** {{ f.recommendation }}
+
+---
+{% endfor %}
+{% else %}
+No QA findings.
+{% endif %}
+
+---
+
+## 9. Security Review
+
+Security score: **{{ result.scores.security }}/100**
+
+{% set sec_agent = findings_by_agent.get("SecurityAgent", []) %}
+{% if sec_agent %}
+{% for f in sec_agent %}
+### {{ f.title }}
+
+**Severity:** {{ f.severity.value | upper }}
+**Category:** {{ f.category }}
+
+{{ f.description }}
+
+{% if f.evidence %}
+**Evidence:** {{ f.evidence }}
+{% endif %}
+
+**Recommendation:** {{ f.recommendation }}
+
+---
+{% endfor %}
+{% else %}
+No security findings.
+{% endif %}
+
+---
+
+## 10. Observability Review
+
+Observability score: **{{ result.scores.observability }}/100**
+
+{% set obs_findings = [] %}
+{% for f in result.findings %}
+{% if "observ" in f.category | lower %}
+{% set _ = obs_findings.append(f) %}
+{% endif %}
+{% endfor %}
+{% if obs_findings %}
+{% for f in obs_findings %}
+- **[{{ f.severity.value | upper }}]** {{ f.title }}: {{ f.description }}
+{% endfor %}
+{% else %}
+No observability findings recorded by the agent team.
+{% endif %}
+
+---
+
+## 11. Documentation Review
+
+Documentation score: **{{ result.scores.documentation }}/100**
+
+{% set doc_agent = findings_by_agent.get("DocumentationAgent", []) %}
+{% if doc_agent %}
+{% for f in doc_agent %}
+### {{ f.title }}
+
+**Severity:** {{ f.severity.value | upper }}
+
+{{ f.description }}
+
+**Recommendation:** {{ f.recommendation }}
+
+---
+{% endfor %}
+{% else %}
+No documentation findings.
+{% endif %}
+
+---
+
+## 12. Critical Findings
+
+| ID | Category | Finding | Evidence | Recommendation |
+|---|---|---|---|---|
+{% if critical_findings %}
+{% for f in critical_findings %}
+| F-{{ loop.index }} | {{ f.category }} | {{ f.title }} | {{ f.evidence or "—" }} | {{ f.recommendation }} |
+{% endfor %}
+{% else %}
+| — | — | No critical findings | — | — |
+{% endif %}
+
+---
+
+## 13. High / Medium Findings
+
+| ID | Severity | Category | Finding | Evidence | Recommendation |
+|---|---|---|---|---|---|
+{% if high_findings or medium_findings %}
+{% for f in high_findings %}
+| F-H{{ loop.index }} | HIGH | {{ f.category }} | {{ f.title }} | {{ f.evidence or "—" }} | {{ f.recommendation }} |
+{% endfor %}
+{% for f in medium_findings %}
+| F-M{{ loop.index }} | MEDIUM | {{ f.category }} | {{ f.title }} | {{ f.evidence or "—" }} | {{ f.recommendation }} |
+{% endfor %}
+{% else %}
+| — | — | — | No high/medium findings | — | — |
+{% endif %}
+
+---
+
+## 14. Low Priority Findings
+
+| ID | Category | Finding | Recommendation |
+|---|---|---|---|
+{% if low_findings %}
+{% for f in low_findings %}
+| F-L{{ loop.index }} | {{ f.category }} | {{ f.title }} | {{ f.recommendation }} |
+{% endfor %}
+{% else %}
+| — | — | No low-priority findings | — |
+{% endif %}
+
+---
+
+## 15. Recommendations
+
+The following are high-level manual recommendations based on audit findings.
+No automatic patches or fix instructions are included.
+
+{% if result.findings %}
+{% set seen = namespace(cats=[]) %}
+{% for f in result.findings %}
+{% if f.category not in seen.cats %}
+- **{{ f.category | title }}**: {{ f.recommendation }}
+{% set _ = seen.cats.append(f.category) %}
+{% endif %}
+{% endfor %}
+{% else %}
+No recommendations — no findings recorded.
+{% endif %}
+
+---
+
+## 16. Suggested Manual Next Steps
+
+1. Review the Critical Findings section and prioritize accordingly.
+2. Assess each High/Medium finding and decide what to address first.
+3. Consult the relevant team members for context on flagged areas.
+4. Use a coding assistant or manual review to address findings.
+5. Re-run the audit after changes and compare score deltas.
+6. Track progress using the Audit History view.
+
+---
+
+## 17. Final Score
+
+```text
+overall_score:       {{ result.scores.overall }}/100
+architecture_score:  {{ result.scores.architecture }}/100
+qa_score:            {{ result.scores.qa }}/100
+security_score:      {{ result.scores.security }}/100
+devops_score:        {{ result.scores.devops }}/100
+mlops_score:         {{ result.scores.mlops }}/100
+documentation_score: {{ result.scores.documentation }}/100
+rag_agent_score:     {{ result.scores.rag_agent }}/100
+observability_score: {{ result.scores.observability }}/100
+```
+
+---
+
+## 18. Known Limitations of This Audit
+
+- This audit is read-only. No code was executed from the target repository.
+- Findings are based on static analysis and agent-based review, not runtime behavior.
+- Agent outputs reflect pattern matching and structural analysis, not deep semantic understanding.
+- Scores are heuristic and penalty-based; they should be interpreted as guidance, not absolute truth.
+- Blueprint alignment is approximate when no blueprint document was provided.
+- Security findings are indicative and must be confirmed by a human security review.
+- Observability and MLOps scoring may be incomplete without runtime environment access.
+- Re-running the audit after changes is recommended to verify improvements.

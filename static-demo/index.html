@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI Project Control Tower — a local-first, read-only AI audit system for software projects." />
+  <title>AI Project Control Tower</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────────── -->
+<nav>
+  <a class="nav-brand" href="#hero">Control <span>Tower</span></a>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#dimensions">Dimensions</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#demo">Demo Report</a></li>
+    <li><a href="#safety">Safety</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────── -->
+<div class="hero" id="hero">
+  <div class="hero-badge">Wave 6 Complete &mdash; All Waves Delivered</div>
+  <h1>AI Project <span>Control Tower</span></h1>
+  <p class="hero-tagline">
+    A local-first, read-only AI audit system. Point it at a codebase, give it an architecture
+    blueprint, and get a structured, evidence-backed audit report across 9 quality dimensions.
+    It never modifies the inspected repository.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-value">7</div>
+      <div class="stat-label">Specialist Agents</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">9</div>
+      <div class="stat-label">Audit Dimensions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Report Formats</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Stack Services</div>
+    </div>
+  </div>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#workflow">See the Workflow</a>
+    <a class="btn btn-secondary" href="#demo">View Demo Report</a>
+  </div>
+</div>
+
+<!-- ─── OVERVIEW ─────────────────────────────────────────────── -->
+<div class="section-wrap" data-section="overview" id="overview">
+  <h2>What It Does &amp; What It Doesn't</h2>
+  <p class="section-sub">The recommendation-only model is the core design principle, not a limitation.</p>
+
+  <div class="overview-grid">
+    <div class="overview-card does">
+      <h3>&#x2713; What It Does</h3>
+      <ul class="check-list">
+        <li>Scans a target repository (read-only, allowlisted paths only)</li>
+        <li>Accepts a Blueprint document as the desired state</li>
+        <li>Runs 7 specialist AI agents across quality domains</li>
+        <li>Scores the project across 9 dimensions (0–100)</li>
+        <li>Produces findings with evidence, severity, and recommendations</li>
+        <li>Exports reports as Markdown, HTML, and JSON</li>
+        <li>Masks secrets in all scanned content and output</li>
+        <li>Tracks audit history with per-run comparison</li>
+      </ul>
+    </div>
+    <div class="overview-card doesnt">
+      <h3>&#x2717; What It Does Not Do</h3>
+      <ul class="check-list doesnt">
+        <li>Auto-fix any code or configuration</li>
+        <li>Generate step-by-step patch instructions</li>
+        <li>Write, delete, or rename files in a target repository</li>
+        <li>Execute code from an inspected repository</li>
+        <li>Provide authentication (local-only design)</li>
+        <li>Support concurrent audit runs</li>
+        <li>Replace human engineering judgment</li>
+        <li>Access external services during a scan</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ─── WORKFLOW ─────────────────────────────────────────────── -->
+<div class="section-wrap" data-section="workflow" id="workflow">
+  <h2>Audit Workflow</h2>
+  <p class="section-sub">Six steps from project setup to downloadable report.</p>
+
+  <div class="workflow-steps">
+    <div class="workflow-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Create a Project</h3>
+        <p>Name the repository you want to audit. The project record provides context for all subsequent audit runs and stores history in PostgreSQL.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Upload a Blueprint</h3>
+        <p>Paste or upload any architecture specification, requirements document, or design doc. This becomes the desired state the audit measures against. The blueprint is chunked and indexed via the hybrid RAG pipeline.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Scan the Repository</h3>
+        <p>The scanner validates the path against the allowlist, reads all text files (skipping binary and oversized files), classifies them by type, and masks secrets before indexing. The target repository is never modified.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Run the Audit</h3>
+        <p>Select mode: <strong>rag_only</strong>, <strong>agent_only</strong>, or <strong>hybrid</strong>. The orchestrator dispatches 6 specialist agents (Architecture, RAG/AI, DevOps, QA, Security, Documentation). Each returns typed findings with evidence and severity. The scoring engine computes 9-dimension scores.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>Review Findings</h3>
+        <p>The Streamlit UI provides a Findings Dashboard (filter by severity and dimension), a Scores page (per-dimension breakdown), and Audit History for comparing runs over time.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h3>Export the Report</h3>
+        <p>Download the full audit report in Markdown (for GitHub / Confluence), HTML (for browser viewing), or JSON (for programmatic processing). The report sanitiser removes any auto-fix content before export.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DIMENSIONS ─────────────────────────────────────────── -->
+<div class="section-wrap" data-section="dimensions" id="dimensions">
+  <h2>Audit Dimensions</h2>
+  <p class="section-sub">Every audit scores the project across 9 quality dimensions (0–100 per dimension).</p>
+
+  <div class="dimensions-grid">
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 01</div>
+      <h3>Architecture</h3>
+      <p>Layer separation, module boundaries, naming patterns, and structural consistency against the blueprint.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 02</div>
+      <h3>RAG / AI Quality</h3>
+      <p>RAG pipeline design, retrieval strategy, embedding approach, vector store usage, and AI component patterns.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 03</div>
+      <h3>DevOps / MLOps</h3>
+      <p>CI/CD pipelines, deployment configurations, containerisation, environment management, and release processes.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 04</div>
+      <h3>Testing / QA</h3>
+      <p>Unit, integration, and E2E test coverage; quality gates; release gate tests; test configuration.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 05</div>
+      <h3>Security</h3>
+      <p>Credential exposure, unsafe patterns, access controls, secret handling, and path validation.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 06</div>
+      <h3>Documentation</h3>
+      <p>README completeness, docstrings, architecture docs, ADRs, API documentation, and onboarding guides.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 07</div>
+      <h3>Observability</h3>
+      <p>Structured logging, Prometheus metrics, distributed tracing readiness, health endpoints, and dashboards.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 08</div>
+      <h3>Data Management</h3>
+      <p>Schema design, migration strategy, storage patterns, data lifecycle, and backup/recovery considerations.</p>
+    </div>
+    <div class="dimension-card">
+      <div class="dim-num">Dimension 09</div>
+      <h3>Overall Score</h3>
+      <p>Weighted aggregate across all 8 specialist dimensions. Provides a single high-level health indicator.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ARCHITECTURE ─────────────────────────────────────────── -->
+<div class="section-wrap" data-section="architecture" id="architecture">
+  <h2>Architecture</h2>
+  <p class="section-sub">Five-service Docker Compose stack with observability built in from day one.</p>
+
+  <pre class="arch-pre">
+ ┌──────────────────────────────────────────────────────┐
+ │            Streamlit UI  host:8513 / int:8501         │
+ │   Project Setup · Blueprint · Audit · Reports · ...  │
+ └───────────────────────┬──────────────────────────────┘
+                         │ HTTP (internal: http://api:8000)
+ ┌───────────────────────▼──────────────────────────────┐
+ │          FastAPI Backend  host:8013 / int:8000        │
+ │                                                      │
+ │  /api/v1/projects  /api/v1/blueprints                │
+ │  /api/v1/audits    /api/v1/scans    /metrics         │
+ │                                                      │
+ │  ┌──────────────┐  ┌──────────────┐  ┌────────────┐ │
+ │  │ Audit Engine │  │  RAG Layer   │  │  Reports   │ │
+ │  │  (7 agents)  │  │  (hybrid)    │  │ MD/HTML/J  │ │
+ │  └──────┬───────┘  └──────┬───────┘  └────────────┘ │
+ │         │                 │                          │
+ │  ┌──────▼─────────────────▼──────────────────────┐  │
+ │  │          Scanner + Security Layer              │  │
+ │  │  PathValidator · SecretMasker · FileClassifier │  │
+ │  └────────────────────────────────────────────────┘  │
+ └───────────────────────┬──────────────────────────────┘
+                         │ SQLAlchemy
+ ┌───────────────────────▼──────────────────────────────┐
+ │      PostgreSQL 16 + pgvector  host:5433 / int:5432  │
+ │  projects · blueprints · audit_runs · findings       │
+ │  rag_documents · rag_document_chunks · reports       │
+ └──────────────────────────────────────────────────────┘
+
+ ┌───────────────────┐      ┌──────────────────────────┐
+ │  Prometheus :9092 │◄─────│  /metrics scrape         │
+ └────────┬──────────┘      └──────────────────────────┘
+          │
+ ┌────────▼──────────┐
+ │   Grafana  :3012  │  pre-provisioned dashboard
+ └───────────────────┘</pre>
+
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-layer">Backend</div>
+      <div class="tech-name">FastAPI + Uvicorn</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-layer">Database</div>
+      <div class="tech-name">PostgreSQL 16 + pgvector</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-layer">ORM</div>
+      <div class="tech-name">SQLAlchemy 2.x</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-layer">Migrations</div>
+      <div class="tech-name">Alembic</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-layer">UI</div>
+      <div class="tech-name">Streamlit</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-layer">Logging</div>
+      <div class="tech-name">structlog (JSON)</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-layer">Metrics</div>
+      <div class="tech-name">prometheus-client</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-layer">Deployment</div>
+      <div class="tech-name">Docker Compose</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DEMO REPORT ─────────────────────────────────────────── -->
+<div class="section-wrap" data-section="demo" id="demo">
+  <h2>Demo Report</h2>
+  <p class="section-sub">What an audit report looks like. All content below is static sample data.</p>
+
+  <div class="demo-label">&#9888; Static Demo Example &mdash; Not Real Audit Output</div>
+
+  <!-- Finding 1 -->
+  <div class="report-card">
+    <div class="rc-header">
+      <div class="rc-title">No authentication layer on audit endpoints</div>
+      <div class="rc-meta">
+        <span class="badge badge-high">HIGH</span>
+        <span class="badge badge-dim">Security</span>
+      </div>
+    </div>
+    <div class="rc-body">
+      <div class="evidence-block">
+        <div class="ev-label">Evidence — app/api/routes/audits.py</div>
+        <div class="ev-content">@router.post("/run")<br>async def run_audit(payload: AuditRunRequest, db: Session = Depends(get_db)):<br>    # No authentication dependency injected</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Recommendation</div>
+        <div class="rec-content">Add an authentication middleware or FastAPI dependency injection guard on production deployments. For local-only use, document the network isolation requirement explicitly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finding 2 -->
+  <div class="report-card">
+    <div class="rc-header">
+      <div class="rc-title">Synchronous audit execution blocks API process</div>
+      <div class="rc-meta">
+        <span class="badge badge-medium">MEDIUM</span>
+        <span class="badge badge-dim">DevOps / MLOps</span>
+      </div>
+    </div>
+    <div class="rc-body">
+      <div class="evidence-block">
+        <div class="ev-label">Evidence — app/audit/audit_engine.py</div>
+        <div class="ev-content">def run_audit(audit_run_id: int, ...) -> AuditResult:<br>    # Runs synchronously; no background task queue</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Recommendation</div>
+        <div class="rec-content">Move long-running audits to a background task queue (Celery, ARQ, or FastAPI BackgroundTasks) for production workloads. One audit at a time is acceptable for local single-user use.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finding 3 -->
+  <div class="report-card">
+    <div class="rc-header">
+      <div class="rc-title">RAG hybrid retrieval correctly implements RRF fusion</div>
+      <div class="rc-meta">
+        <span class="badge badge-low">PASS</span>
+        <span class="badge badge-dim">RAG / AI</span>
+      </div>
+    </div>
+    <div class="rc-body">
+      <div class="evidence-block">
+        <div class="ev-label">Evidence — app/rag/hybrid_retriever.py</div>
+        <div class="ev-content">def retrieve(self, query: str, top_k: int = 10) -> list[RagChunk]:<br>    tfidf_results = self.tfidf.retrieve(query, top_k)<br>    vector_results = self.vector.retrieve(query, top_k)<br>    return self._rrf_fusion(tfidf_results, vector_results, top_k)</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-label">Observation</div>
+        <div class="rec-content">Hybrid retrieval with Reciprocal Rank Fusion is correctly implemented. Both lexical (TF-IDF) and semantic (pgvector) retrievers are used and fused as specified in the Blueprint.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score bars -->
+  <p style="margin-top:32px;margin-bottom:0;font-size:15px;font-weight:600;">Sample Dimension Scores</p>
+  <p style="margin-bottom:4px;font-size:12px;color:var(--text-secondary);">Static demo values. Real scores are computed from actual findings.</p>
+
+  <div class="score-bars">
+    <div class="score-row">
+      <span class="score-label">Architecture</span>
+      <div class="score-track"><div class="score-fill" data-pct="82" style="width:82%;background:var(--accent-green);"></div></div>
+      <span class="score-val" style="color:var(--accent-green);">82</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">RAG / AI</span>
+      <div class="score-track"><div class="score-fill" data-pct="78" style="width:78%;background:var(--accent-green);"></div></div>
+      <span class="score-val" style="color:var(--accent-green);">78</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">DevOps / MLOps</span>
+      <div class="score-track"><div class="score-fill" data-pct="71" style="width:71%;background:var(--accent-blue);"></div></div>
+      <span class="score-val" style="color:var(--accent-blue);">71</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">Testing / QA</span>
+      <div class="score-track"><div class="score-fill" data-pct="85" style="width:85%;background:var(--accent-green);"></div></div>
+      <span class="score-val" style="color:var(--accent-green);">85</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">Security</span>
+      <div class="score-track"><div class="score-fill" data-pct="64" style="width:64%;background:var(--accent-amber);"></div></div>
+      <span class="score-val" style="color:var(--accent-amber);">64</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">Documentation</span>
+      <div class="score-track"><div class="score-fill" data-pct="90" style="width:90%;background:var(--accent-green);"></div></div>
+      <span class="score-val" style="color:var(--accent-green);">90</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">Observability</span>
+      <div class="score-track"><div class="score-fill" data-pct="88" style="width:88%;background:var(--accent-green);"></div></div>
+      <span class="score-val" style="color:var(--accent-green);">88</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">Data Management</span>
+      <div class="score-track"><div class="score-fill" data-pct="76" style="width:76%;background:var(--accent-blue);"></div></div>
+      <span class="score-val" style="color:var(--accent-blue);">76</span>
+    </div>
+    <div class="score-row" style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;">
+      <span class="score-label" style="font-weight:600;color:var(--text-primary);">Overall</span>
+      <div class="score-track"><div class="score-fill" data-pct="79" style="width:79%;background:var(--accent-blue);"></div></div>
+      <span class="score-val" style="color:var(--accent-blue);font-weight:700;">79</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SAFETY ─────────────────────────────────────────────── -->
+<div class="section-wrap" data-section="safety" id="safety">
+  <h2>Safety Boundaries</h2>
+  <p class="section-sub">Seven non-negotiable rules enforced at multiple layers. These are architectural constraints, not configuration options.</p>
+
+  <div class="safety-grid">
+    <div class="safety-rule">
+      <h3>Never modify a target repository</h3>
+      <p>E2E test is a mandatory release gate. The system fails CI if any file in a target repository is created, changed, or deleted during an audit.</p>
+    </div>
+    <div class="safety-rule">
+      <h3>Never execute target code</h3>
+      <p>The scanner opens files in text mode only. No subprocess calls. No eval. No dynamic import from the target repository.</p>
+    </div>
+    <div class="safety-rule">
+      <h3>Never auto-fix findings</h3>
+      <p>The ReportSanitiser removes any auto-fix or patch language from agent output before it reaches the report store or the UI.</p>
+    </div>
+    <div class="safety-rule">
+      <h3>Only scan allowed paths</h3>
+      <p>PathValidator checks every audit request against <code>ALLOWED_SCAN_PATHS</code>. Path traversal attempts are resolved and rejected.</p>
+    </div>
+    <div class="safety-rule">
+      <h3>Skip binary and oversized files</h3>
+      <p>FileClassifier skips binary assets, compiled artifacts, and files over the configured size limit before any content is read.</p>
+    </div>
+    <div class="safety-rule">
+      <h3>Mask secrets in all output</h3>
+      <p>SecretMasker replaces credential patterns (API keys, tokens, passwords) before content is stored or returned in any format.</p>
+    </div>
+    <div class="safety-rule">
+      <h3>Never log provider API keys</h3>
+      <p>structlog configuration explicitly excludes LLM provider credentials from all log output, including debug and error levels.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PORTFOLIO ─────────────────────────────────────────── -->
+<div class="section-wrap" data-section="portfolio" id="portfolio">
+  <h2>Portfolio Narrative</h2>
+  <p class="section-sub">How to present this project in an AI systems or MLOps engineering context.</p>
+
+  <div class="portfolio-card">
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Suitable for: AI/ML Engineering, MLOps Engineering, Platform Engineering, Backend Engineering roles.</p>
+
+    <blockquote>
+      "This is an AI audit system — you point it at a codebase, give it an architecture blueprint,
+      and it tells you how well the project matches the blueprint. It uses a hybrid RAG pipeline
+      to index the blueprint, dispatches 7 specialist agents against the repository, and produces
+      a scored report with evidence-backed findings across 9 quality dimensions. The core invariant:
+      it never modifies the inspected repository."
+    </blockquote>
+
+    <p style="font-size:14px;font-weight:600;margin:20px 0 10px;">What This Project Demonstrates</p>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+      <li style="font-size:13px;color:var(--text-secondary);padding-left:16px;position:relative;">
+        <span style="position:absolute;left:0;color:var(--accent-blue);">&#x2192;</span>
+        <strong style="color:var(--text-primary);">Complete AI pipeline design</strong> — RAG from scratch, multi-agent orchestration, structured output schemas
+      </li>
+      <li style="font-size:13px;color:var(--text-secondary);padding-left:16px;position:relative;">
+        <span style="position:absolute;left:0;color:var(--accent-blue);">&#x2192;</span>
+        <strong style="color:var(--text-primary);">Production concerns</strong> — Alembic migrations, Docker Compose, Prometheus metrics, Grafana dashboard
+      </li>
+      <li style="font-size:13px;color:var(--text-secondary);padding-left:16px;position:relative;">
+        <span style="position:absolute;left:0;color:var(--accent-blue);">&#x2192;</span>
+        <strong style="color:var(--text-primary);">Safety-first architecture</strong> — non-modification invariant enforced in code, tests, and report sanitisation
+      </li>
+      <li style="font-size:13px;color:var(--text-secondary);padding-left:16px;position:relative;">
+        <span style="position:absolute;left:0;color:var(--accent-blue);">&#x2192;</span>
+        <strong style="color:var(--text-primary);">Typed, auditable AI output</strong> — every finding has a file trace, evidence excerpt, severity, and recommendation
+      </li>
+      <li style="font-size:13px;color:var(--text-secondary);padding-left:16px;position:relative;">
+        <span style="position:absolute;left:0;color:var(--accent-blue);">&#x2192;</span>
+        <strong style="color:var(--text-primary);">Documentation as engineering</strong> — architecture docs, API docs, test docs, deployment guides, and this site
+      </li>
+    </ul>
+
+    <div class="skill-tags">
+      <span class="skill-tag">FastAPI</span>
+      <span class="skill-tag">PostgreSQL + pgvector</span>
+      <span class="skill-tag">RAG Pipeline</span>
+      <span class="skill-tag">Multi-Agent</span>
+      <span class="skill-tag">Hybrid Retrieval</span>
+      <span class="skill-tag">SQLAlchemy</span>
+      <span class="skill-tag">Alembic</span>
+      <span class="skill-tag">Pydantic</span>
+      <span class="skill-tag">structlog</span>
+      <span class="skill-tag">Prometheus</span>
+      <span class="skill-tag">Grafana</span>
+      <span class="skill-tag">Docker Compose</span>
+      <span class="skill-tag">Streamlit</span>
+      <span class="skill-tag">pytest</span>
+      <span class="skill-tag">E2E Release Gate</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────── -->
+<footer>
+  <p>Oren Salami &nbsp;|&nbsp; &#x1F9E0; AI Systems Engineer</p>
+  <p class="footer-sub">Intelligent Systems &bull; AI Agents &bull; Data &amp; Automation</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
