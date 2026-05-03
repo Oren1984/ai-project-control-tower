@@ -22,10 +22,12 @@ def render() -> None:
     st.markdown("---")
 
     for audit in audits:
-        score = audit.get("overall_score")
-        score_str = f"{score}/100" if score is not None else "N/A"
         status = audit.get("status", "")
         status_icon = {"completed": "✅", "failed": "❌", "running": "⏳"}.get(status, "❓")
+        # Only show a numeric score for completed audits; failed/running show N/A
+        # even if a score value exists in the DB (early-exit audits store 100 which is meaningless).
+        raw_score = audit.get("overall_score")
+        score_str = f"{raw_score}/100" if (status == "completed" and raw_score is not None) else "N/A"
 
         with st.expander(
             f"{status_icon} Audit #{audit['id']} | Score: {score_str} | "

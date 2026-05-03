@@ -49,10 +49,29 @@ def _run_audit_impl(request: AuditRunRequest, db: Session) -> AuditResult:
     except Exception as exc:
         logger.error("audit_run_failed", audit_run_id=audit_run.id, error=str(exc))
         audit_run.status = "failed"
+        audit_run.completed_at = datetime.now(timezone.utc)
         db.commit()
         raise HTTPException(status_code=500, detail="Audit failed unexpectedly")
 
-    if audit_run.overall_score is None:
+    # Safety net: _persist() covers the happy path in a single commit, but early-exit
+    # paths (PathValidationError) return without calling _persist, leaving status="running".
+    # Also guards against _persist() exceptions that are caught-and-swallowed internally.
+    db.refresh(audit_run)
+    if audit_run.status == "running":
+        audit_run.status = result.status
+        audit_run.completed_at = result.completed_at or datetime.now(timezone.utc)
+        # Only record a score for successful audits; failed audits keep overall_score=NULL
+        # so the UI can render "N/A" without ambiguity.
+        if result.status == "completed":
+            audit_run.overall_score = result.scores.overall
+        db.commit()
+        logger.info(
+            "audit_run_status_synced",
+            audit_run_id=audit_run.id,
+            status=result.status,
+            overall_score=audit_run.overall_score,
+        )
+    elif audit_run.overall_score is None and result.status == "completed":
         audit_run.overall_score = result.scores.overall
         db.commit()
 
@@ -164,9 +183,21 @@ def get_audit_report(
     if audit_run is None:
         raise HTTPException(status_code=404, detail=f"Audit run {audit_run_id} not found")
     if audit_run.status != "completed":
+        hint = (
+            "The audit is still in progress." if audit_run.status == "running"
+            else "The audit encountered an error and did not complete successfully."
+        )
+        logger.warning(
+            "report_rejected_not_completed",
+            audit_run_id=audit_run_id,
+            status=audit_run.status,
+        )
         raise HTTPException(
             status_code=400,
-            detail=f"Audit run {audit_run_id} is not completed (status={audit_run.status})",
+            detail=(
+                f"Audit run {audit_run_id} cannot generate a report "
+                f"(status={audit_run.status!r}). {hint}"
+            ),
         )
 
     report_format = ReportFormat(format)

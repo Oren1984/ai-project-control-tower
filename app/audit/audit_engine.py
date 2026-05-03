@@ -71,10 +71,11 @@ class AuditEngine:
         for result in agent_results:
             all_findings.extend(result.findings)
 
-        if db_session is not None:
-            self._persist(db_session, audit_run_id, all_findings)
-
         scores = compute_scores(all_findings)
+
+        if db_session is not None:
+            self._persist(db_session, audit_run_id, all_findings, overall_score=scores.overall)
+
         completed_at = datetime.now(timezone.utc)
 
         logger.info(
@@ -96,7 +97,13 @@ class AuditEngine:
             completed_at=completed_at,
         )
 
-    def _persist(self, db_session: Any, audit_run_id: int, findings: list[FindingModel]) -> None:
+    def _persist(
+        self,
+        db_session: Any,
+        audit_run_id: int,
+        findings: list[FindingModel],
+        overall_score: float | None = None,
+    ) -> None:
         from app.db.models.audit_run import AuditRun
         from app.db.models.finding import Finding
 
@@ -119,6 +126,8 @@ class AuditEngine:
             if audit_run:
                 audit_run.status = "completed"
                 audit_run.completed_at = datetime.now(timezone.utc)
+                if overall_score is not None:
+                    audit_run.overall_score = overall_score
 
             db_session.commit()
             logger.info("audit_engine_persisted", audit_run_id=audit_run_id, count=len(findings))

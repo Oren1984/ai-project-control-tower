@@ -109,7 +109,7 @@ curl -X POST http://localhost:8013/api/v1/audits/run \
 curl "http://localhost:8013/api/v1/audits/1/report?format=markdown"
 ```
 
-Full API reference: [docs/api.md](docs/api.md)
+Full API reference: [api.md](api.md)
 
 ---
 

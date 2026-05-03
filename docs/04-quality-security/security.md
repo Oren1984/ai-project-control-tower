@@ -96,7 +96,7 @@ pytest tests/e2e/test_no_repo_modification.py -v
 
 ## Known Security Limitations
 
-See `docs/known_limitations.md` for the full list. Key items:
+See [`known_limitations.md`](known_limitations.md) for the full list. Key items:
 - No authentication on the API (local-only by design).
 - No rate limiting on audit endpoints.
 - Allowlist enforcement only happens for the initial path; the scanner does not re-validate each individual file against the allowlist.

@@ -23,7 +23,22 @@
       "Bash(grep -v \"^$\")",
       "PowerShell(python -c \"import pydantic_settings; print\\(pydantic_settings.__version__\\)\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8012)",
-      "Bash(kill %1)"
+      "Bash(kill %1)",
+      "Bash(docker compose *)",
+      "Bash(curl -s http://localhost:8013/api/v1/health)",
+      "Bash(curl -s http://localhost:8013/api/v1/projects)",
+      "PowerShell(curl *)",
+      "PowerShell(Start-Sleep -Seconds 5; Invoke-RestMethod -Uri \"http://localhost:8013/api/v1/health\" -Method Get | ConvertTo-Json)",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:8013/api/v1/audits/history\" -Method Get | ConvertTo-Json -Depth 3)",
+      "PowerShell(Start-Sleep -Seconds 6; Invoke-RestMethod -Uri \"http://localhost:8013/api/v1/health\" | ConvertTo-Json)",
+      "PowerShell(docker exec control_tower_api *)",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:8013/api/v1/projects\" | ConvertTo-Json -Depth 2)",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:8013/api/v1/audits/history?limit=5\" | ConvertTo-Json -Depth 3)",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:8013/api/v1/audits/5/report?format=markdown\" -ErrorAction SilentlyContinue | Select-Object StatusCode, Content)",
+      "Bash(dir C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\\\\docs /b)",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:8013/api/v1/health\" -UseBasicParsing | Select-Object -ExpandProperty Content)",
+      "PowerShell(Invoke-WebRequest -Uri \"http://localhost:8013/api/v1/ready\" -UseBasicParsing | Select-Object -ExpandProperty Content)",
+      "Bash(git mv *)"
     ]
   }
 }

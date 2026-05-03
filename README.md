@@ -60,7 +60,7 @@ Streamlit UI (:8513)  ←HTTP→  FastAPI (:8013)  ←SQLAlchemy→  PostgreSQL+
 > **Docker networking note:** host ports are for browser access only. Inside Docker Compose,
 > the UI container reaches the API at `http://api:8000` (internal port), not `:8013`.
 
-Full architecture diagram: [docs/architecture.md](docs/architecture.md)
+Full architecture diagram: [docs/00-overview/architecture.md](docs/00-overview/architecture.md)
 
 ---
 
@@ -203,7 +203,7 @@ All services are defined in `docker-compose.yml`:
 5. **Review findings** — view scores, findings, and evidence in the UI
 6. **Download the report** — export as Markdown, HTML, or JSON
 
-Full workflow guide: [docs/workflow.md](docs/workflow.md)
+Full workflow guide: [docs/03-audit-workflow/workflow.md](docs/03-audit-workflow/workflow.md)
 
 ---
 
@@ -273,7 +273,7 @@ pytest tests/integration/ -v
 pytest tests/e2e/test_no_repo_modification.py -v
 ```
 
-Full test matrix: [docs/testing.md](docs/testing.md)
+Full test matrix: [docs/04-quality-security/testing.md](docs/04-quality-security/testing.md)
 
 ---
 
@@ -292,7 +292,7 @@ docker compose exec db psql -U control_tower -d control_tower_db \
   -c "SELECT * FROM pg_extension WHERE extname = 'vector';"
 ```
 
-See [docs/e2e-validation-summary.md](docs/e2e-validation-summary.md) for the full checklist.
+See [docs/03-audit-workflow/e2e-validation-summary.md](docs/03-audit-workflow/e2e-validation-summary.md) for the full checklist.
 
 ---
 
@@ -308,7 +308,7 @@ open http://localhost:3012  # admin / admin
 
 11 Prometheus metrics pre-defined. Grafana dashboard (`observability/grafana/dashboards/control_tower.json`) is pre-provisioned — no manual setup needed.
 
-See [docs/observability.md](docs/observability.md) for details.
+See [docs/04-quality-security/observability.md](docs/04-quality-security/observability.md) for details.
 
 ---
 
@@ -324,7 +324,7 @@ See [docs/observability.md](docs/observability.md) for details.
 | Skip binary and oversized files | FileClassifier + size check |
 | Mask secrets in all output | SecretMasker + ReportSanitiser |
 
-See [docs/security.md](docs/security.md) for details.
+See [docs/04-quality-security/security.md](docs/04-quality-security/security.md) for details.
 
 ---
 
@@ -337,7 +337,7 @@ See [docs/security.md](docs/security.md) for details.
 - **DevOps** — Docker Compose full stack, Alembic migrations, comprehensive pytest suite
 - **Portfolio presentation** — Demo Mode, static site, notebooks, and full documentation
 
-Full portfolio narrative: [docs/portfolio-summary.md](docs/portfolio-summary.md)
+Full portfolio narrative: [docs/00-overview/portfolio-summary.md](docs/00-overview/portfolio-summary.md)
 
 ---
 
@@ -363,7 +363,7 @@ Full portfolio narrative: [docs/portfolio-summary.md](docs/portfolio-summary.md)
 - Jupyter notebooks parsed as raw JSON only
 - pgvector semantic search requires a configured embedding provider
 
-Full list: [docs/known_limitations.md](docs/known_limitations.md)
+Full list: [docs/04-quality-security/known_limitations.md](docs/04-quality-security/known_limitations.md)
 
 ---
 
@@ -371,19 +371,22 @@ Full list: [docs/known_limitations.md](docs/known_limitations.md)
 
 | File | Purpose |
 |---|---|
-| [docs/architecture.md](docs/architecture.md) | System architecture and data flow |
-| [docs/api.md](docs/api.md) | API reference |
-| [docs/deployment.md](docs/deployment.md) | Deployment guide |
-| [docs/testing.md](docs/testing.md) | Test matrix and instructions |
-| [docs/observability.md](docs/observability.md) | Metrics, logging, Grafana |
-| [docs/security.md](docs/security.md) | Security guardrails |
-| [docs/known_limitations.md](docs/known_limitations.md) | Current limitations |
-| [docs/project-overview.md](docs/project-overview.md) | Detailed project overview |
-| [docs/workflow.md](docs/workflow.md) | End-to-end workflow guide |
-| [docs/qa-summary.md](docs/qa-summary.md) | QA and validation summary |
-| [docs/e2e-validation-summary.md](docs/e2e-validation-summary.md) | E2E validation checklist |
-| [docs/portfolio-summary.md](docs/portfolio-summary.md) | Portfolio narrative |
-| [docs/demo-instructions.md](docs/demo-instructions.md) | Demo and interview instructions |
+| [docs/01-usage/USER_GUIDE.md](docs/01-usage/USER_GUIDE.md) | Step-by-step UI usage guide |
+| [docs/02-installation/INSTALLATION.md](docs/02-installation/INSTALLATION.md) | Installation and setup guide |
+| [docs/02-installation/deployment.md](docs/02-installation/deployment.md) | Deployment guide |
+| [docs/00-overview/architecture.md](docs/00-overview/architecture.md) | System architecture and data flow |
+| [docs/00-overview/project-overview.md](docs/00-overview/project-overview.md) | Detailed project overview |
+| [docs/00-overview/portfolio-summary.md](docs/00-overview/portfolio-summary.md) | Portfolio narrative |
+| [docs/01-usage/demo-instructions.md](docs/01-usage/demo-instructions.md) | Demo and interview instructions |
+| [docs/03-audit-workflow/api.md](docs/03-audit-workflow/api.md) | API reference |
+| [docs/03-audit-workflow/workflow.md](docs/03-audit-workflow/workflow.md) | End-to-end workflow guide |
+| [docs/03-audit-workflow/e2e-validation-summary.md](docs/03-audit-workflow/e2e-validation-summary.md) | E2E validation checklist |
+| [docs/04-quality-security/testing.md](docs/04-quality-security/testing.md) | Test matrix and instructions |
+| [docs/04-quality-security/observability.md](docs/04-quality-security/observability.md) | Metrics, logging, Grafana |
+| [docs/04-quality-security/security.md](docs/04-quality-security/security.md) | Security guardrails |
+| [docs/04-quality-security/known_limitations.md](docs/04-quality-security/known_limitations.md) | Current limitations |
+| [docs/04-quality-security/qa-summary.md](docs/04-quality-security/qa-summary.md) | QA and validation summary |
+| [docs/05-cleanup/CLEANUP_REVIEW.md](docs/05-cleanup/CLEANUP_REVIEW.md) | Repository cleanup review |
 | [CLAUDE.md](CLAUDE.md) | Engineering contract |
 | [Doces/](Doces/) | Source of truth planning documents |
 

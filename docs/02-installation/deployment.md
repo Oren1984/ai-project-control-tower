@@ -136,4 +136,4 @@ This system is local-first by design. For production deployment:
 - Enable TLS.
 - Store secrets in a vault (HashiCorp Vault, AWS Secrets Manager, etc.).
 
-See `docs/known_limitations.md` for current limitations.
+See [`../04-quality-security/known_limitations.md`](../04-quality-security/known_limitations.md) for current limitations.

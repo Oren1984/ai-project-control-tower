@@ -27,14 +27,17 @@ services:
       - .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-control_tower}:${POSTGRES_PASSWORD:-control_tower_pass}@db:5432/${POSTGRES_DB:-control_tower_db}
-      # Default to a safe JSON list so the API never crashes on empty ALLOWED_SCAN_PATHS.
-      # Override in .env with your own paths, e.g. ALLOWED_SCAN_PATHS=["/home/user/repos"]
-      ALLOWED_SCAN_PATHS: ${ALLOWED_SCAN_PATHS:-["/app","/workspace","/home/demo/repos"]}
+      # Default allowed scan roots. /workspace maps to HOST_REPOS_PATH on the host.
+      ALLOWED_SCAN_PATHS: ${ALLOWED_SCAN_PATHS:-["/app","/workspace"]}
     ports:
       - "8013:8000"
     volumes:
       - .:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      # Bind-mount the host repos directory so the API can scan target projects.
+      # HOST_REPOS_PATH is set in .env (e.g. C:/Users/ORENS).
+      # Inside the container repos appear at /workspace/<repo-name>.
+      - ${HOST_REPOS_PATH:-/tmp/repos}:/workspace:ro
+    command: sh /app/entrypoint.sh
 
   ui:
     build:
