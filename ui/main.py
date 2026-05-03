@@ -28,6 +28,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Hide Streamlit's automatic multipage sidebar nav — we use our own radio nav.
+st.markdown(
+    "<style>[data-testid='stSidebarNav']{display:none!important}</style>",
+    unsafe_allow_html=True,
+)
+
 PAGES: dict = {
     "Project Setup": page_project_setup,
     "Blueprint Upload": page_blueprint_upload,

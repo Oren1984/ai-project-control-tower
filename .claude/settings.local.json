@@ -14,7 +14,16 @@
       "Bash(dir static-demo *)",
       "Bash(Get-ChildItem -Path 'C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\\\\ui' -Recurse -Force)",
       "Bash(Select-Object FullName)",
-      "Bash(Sort-Object FullName)"
+      "Bash(Sort-Object FullName)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\")",
+      "Bash(findstr \"__pycache__\\\\|\\\\.pytest_cache\\\\|\\\\.mypy_cache\\\\|\\\\.ruff_cache\\\\|htmlcov\")",
+      "PowerShell(Get-ChildItem -Recurse -Directory \"C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\" -ErrorAction SilentlyContinue | Where-Object { $_.Name -in @\\('__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache', 'htmlcov', '.coverage'\\) } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Recurse \"C:\\\\Users\\\\ORENS\\\\ai-project-control-tower\" -ErrorAction SilentlyContinue | Where-Object { $_.PSIsContainer -and $_.Name -in @\\('__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache', 'htmlcov'\\) } | Select-Object FullName | Format-Table -AutoSize)",
+      "Bash(git status *)",
+      "Bash(grep -v \"^$\")",
+      "PowerShell(python -c \"import pydantic_settings; print\\(pydantic_settings.__version__\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8012)",
+      "Bash(kill %1)"
     ]
   }
 }

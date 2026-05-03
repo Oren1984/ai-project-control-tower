@@ -11,7 +11,8 @@ services:
     ports:
       - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-control_tower}"]
+      # -d flag ensures the specific database exists before marking healthy
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-control_tower} -d ${POSTGRES_DB:-control_tower_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,6 +27,9 @@ services:
       - .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-control_tower}:${POSTGRES_PASSWORD:-control_tower_pass}@db:5432/${POSTGRES_DB:-control_tower_db}
+      # Default to a safe JSON list so the API never crashes on empty ALLOWED_SCAN_PATHS.
+      # Override in .env with your own paths, e.g. ALLOWED_SCAN_PATHS=["/home/user/repos"]
+      ALLOWED_SCAN_PATHS: ${ALLOWED_SCAN_PATHS:-["/app","/workspace","/home/demo/repos"]}
     ports:
       - "8013:8000"
     volumes:

@@ -5,10 +5,12 @@ WORKDIR /app
 RUN pip install --no-cache-dir streamlit>=1.35.0 requests>=2.32.0
 
 COPY ui/ ./ui/
+COPY .streamlit/ ./.streamlit/
 
 EXPOSE 8501
 
 CMD ["streamlit", "run", "ui/main.py", \
      "--server.address=0.0.0.0", \
      "--server.port=8501", \
-     "--server.headless=true"]
+     "--server.headless=true", \
+     "--browser.gatherUsageStats=false"]

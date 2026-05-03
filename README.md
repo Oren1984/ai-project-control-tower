@@ -151,6 +151,13 @@ docker compose up --build
 
 Starts: PostgreSQL · FastAPI · Streamlit · Prometheus · Grafana
 
+> **Stale volume note:** If you see `FATAL: database "control_tower" does not exist` in
+> logs, a Docker volume from a previous run may have a different database name. Reset it:
+> ```bash
+> docker compose down -v
+> docker compose up --build
+> ```
+
 #### 3. Run database migrations (first time only)
 
 ```bash
@@ -236,13 +243,14 @@ See [notebooks/README.md](notebooks/README.md) for details.
 
 A portfolio-ready static site is available at `static-demo/index.html`.
 
-To open locally (no server required):
+To open locally:
 
 ```bash
-python -m http.server 8099 -d static-demo
+cd static-demo
+python -m http.server 8012
 ```
 
-Then open http://localhost:8099
+Then open http://localhost:8012
 
 The site covers: workflow, audit dimensions, architecture, safety boundaries, demo report cards (labeled as static examples), and portfolio narrative.
 

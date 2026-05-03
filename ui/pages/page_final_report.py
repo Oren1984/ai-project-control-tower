@@ -50,7 +50,12 @@ def render() -> None:
                 file_name=f"audit_{audit_id}_report.html",
                 mime="text/html",
             )
-            st.components.v1.html(content, height=800, scrolling=True)
+            # st.html() is the forward-compatible API (Streamlit >= 1.36).
+            # st.components.v1.html() is deprecated and removed after 2026-06-01.
+            if hasattr(st, "html"):
+                st.html(content)
+            else:
+                st.components.v1.html(content, height=800, scrolling=True)
 
         elif selected_fmt == "json":
             st.download_button(
