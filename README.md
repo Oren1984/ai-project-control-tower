@@ -1,7 +1,6 @@
 # AI Project Control Tower
 
-**Oren Salami** &nbsp;|&nbsp; 🧠 AI Systems Engineer
-Intelligent Systems &bull; AI Agents &bull; Data &amp; Automation
+## Oren Salami | AI Systems Engineer ## 
 
 ---
 
