@@ -39,3 +39,6 @@ postgres_data/
 # Reports output (will be created at runtime)
 data/reports/
 data/projects/
+
+# Claude local configuration
+.claude/
